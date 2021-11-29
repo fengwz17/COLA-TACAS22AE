@@ -15,6 +15,13 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// The COLA Authors:
+// 
+// COLA implements complementing UNBA and LDBA algorithms, as well as
+// determinizing LDBA algorithms.
+// Add corresonding function declaration in this file.
+
 #pragma once
 
 #include <set>
@@ -65,7 +72,7 @@ namespace from_spot {
   ///
   /// The automaton \a aut should be unambiguous.
   ///
-  /// Uses the NCSB algorithm described by Y. Li, M.Y. Vardi, and L. Zhang (GandALF'20)
+  /// Uses the NCB algorithm described by Y. Li, M.Y. Vardi, and L. Zhang (GandALF'20)
   spot::twa_graph_ptr
   complement_unambiguous(const spot::const_twa_graph_ptr &aut, bool show_names = false);
 
@@ -73,7 +80,7 @@ namespace from_spot {
   ///
   /// The automaton \a aut should be semideterministic.
   ///
-  /// Uses the NCB algorithm described by Y. Li
+  /// Uses the NSBC algorithm described by Y. Li (in submission)
   spot::twa_graph_ptr
   new_complement_semidet(const spot::const_twa_graph_ptr &aut, bool show_names = false);
 

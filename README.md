@@ -28,7 +28,7 @@ Just follow Readme.txt in artifact.zip:
 chmod u+x configure
 ```
 ```
-./configure --disable-python
+./configure
 ```
 ```
 make

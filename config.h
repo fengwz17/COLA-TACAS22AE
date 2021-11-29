@@ -10,9 +10,6 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
-/* Define to 1 if you have the <Python.h> header file. */
-/* #undef HAVE_PYTHON_H */
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
@@ -38,28 +35,28 @@
 #define LT_OBJDIR ".libs/"
 
 /* Name of package */
-#define PACKAGE "seminator"
+#define PACKAGE "cola"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT ""
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "seminator"
+#define PACKAGE_NAME "cola"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "seminator 2.0dev"
+#define PACKAGE_STRING "cola 0.0dev"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "seminator"
+#define PACKAGE_TARNAME "cola"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.0dev"
+#define PACKAGE_VERSION "0.0dev"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "2.0dev"
+#define VERSION "0.0dev"

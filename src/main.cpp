@@ -1,20 +1,26 @@
-// Copyright (c) 2017-2020  The cola Authors
+// Copyright (c) 2017-2020  The Seminator Authors
 //
-// This file is a part of cola, a tool for semi-determinization
+// This file is a part of Seminator, a tool for semi-determinization
 // of omega automata.
 //
-// cola is free software: you can redistribute it and/or modify
+// Seminator is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// cola is distributed in the hope that it will be useful,
+// Seminator is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// The COLA Authors:
+// 
+// COLA implements complementing UNBA and LDBA algorithms, as well as
+// determinizing LDBA algorithms.
+// Add corresonding options in this file. 
 
 #include "config.h"
 #include <unistd.h>
@@ -284,7 +290,7 @@ int main(int argc, char* argv[])
           {
             std::cout << "cola " PACKAGE_VERSION
               " (using Spot " << spot::version() << ")\n\n"
-              "Copyright (C) 2020  The cola Authors.\n"
+              "Copyright (C) 2021  The cola Authors.\n"
               "License GPLv3+: GNU GPL version 3 or later"
               " <http://gnu.org/licenses/gpl.html>.\n"
               "This is free software: you are free to change "

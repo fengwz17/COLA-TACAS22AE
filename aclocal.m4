@@ -1055,8 +1055,8 @@ int forced_loaded() { return 2;}
 _LT_EOF
       echo "$LTCC $LTCFLAGS -c -o conftest.o conftest.c" >&AS_MESSAGE_LOG_FD
       $LTCC $LTCFLAGS -c -o conftest.o conftest.c 2>&AS_MESSAGE_LOG_FD
-      echo "$AR cru libconftest.a conftest.o" >&AS_MESSAGE_LOG_FD
-      $AR cru libconftest.a conftest.o 2>&AS_MESSAGE_LOG_FD
+      echo "$AR cr libconftest.a conftest.o" >&AS_MESSAGE_LOG_FD
+      $AR cr libconftest.a conftest.o 2>&AS_MESSAGE_LOG_FD
       echo "$RANLIB libconftest.a" >&AS_MESSAGE_LOG_FD
       $RANLIB libconftest.a 2>&AS_MESSAGE_LOG_FD
       cat > conftest.c << _LT_EOF
@@ -1506,7 +1506,7 @@ need_locks=$enable_libtool_lock
 m4_defun([_LT_PROG_AR],
 [AC_CHECK_TOOLS(AR, [ar], false)
 : ${AR=ar}
-: ${AR_FLAGS=cru}
+: ${AR_FLAGS=cr}
 _LT_DECL([], [AR], [1], [The archiver])
 _LT_DECL([], [AR_FLAGS], [1], [Flags to create an archive])
 
@@ -2900,6 +2900,18 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu*)
   dynamic_linker='GNU/Linux ld.so'
   ;;
 
+netbsdelf*-gnu)
+  version_type=linux
+  need_lib_prefix=no
+  need_version=no
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  shlibpath_var=LD_LIBRARY_PATH
+  shlibpath_overrides_runpath=no
+  hardcode_into_libs=yes
+  dynamic_linker='NetBSD ld.elf_so'
+  ;;
+
 netbsd*)
   version_type=sunos
   need_lib_prefix=no
@@ -3559,7 +3571,7 @@ linux* | k*bsd*-gnu | kopensolaris*-gnu | gnu*)
   lt_cv_deplibs_check_method=pass_all
   ;;
 
-netbsd*)
+netbsd* | netbsdelf*-gnu)
   if echo __ELF__ | $CC -E - | $GREP __ELF__ > /dev/null; then
     lt_cv_deplibs_check_method='match_pattern /lib[[^/]]+(\.so\.[[0-9]]+\.[[0-9]]+|_pic\.a)$'
   else
@@ -4065,7 +4077,8 @@ _LT_EOF
   if AC_TRY_EVAL(ac_compile); then
     # Now try to grab the symbols.
     nlist=conftest.nm
-    if AC_TRY_EVAL(NM conftest.$ac_objext \| "$lt_cv_sys_global_symbol_pipe" \> $nlist) && test -s "$nlist"; then
+    $ECHO "$as_me:$LINENO: $NM conftest.$ac_objext | $lt_cv_sys_global_symbol_pipe > $nlist" >&AS_MESSAGE_LOG_FD
+    if eval "$NM" conftest.$ac_objext \| "$lt_cv_sys_global_symbol_pipe" \> $nlist 2>&AS_MESSAGE_LOG_FD && test -s "$nlist"; then
       # Try sorting and uniquifying the output.
       if sort "$nlist" | uniq > "$nlist"T; then
 	mv -f "$nlist"T "$nlist"
@@ -4437,7 +4450,7 @@ m4_if([$1], [CXX], [
 	    ;;
 	esac
 	;;
-      netbsd*)
+      netbsd* | netbsdelf*-gnu)
 	;;
       *qnx* | *nto*)
         # QNX uses GNU C++, but need to define -shared option too, otherwise
@@ -4705,6 +4718,12 @@ m4_if([$1], [CXX], [
 	_LT_TAGVAR(lt_prog_compiler_pic, $1)='-KPIC'
 	_LT_TAGVAR(lt_prog_compiler_static, $1)='-static'
         ;;
+      # flang / f18. f95 an alias for gfortran or flang on Debian
+      flang* | f18* | f95*)
+	_LT_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
+	_LT_TAGVAR(lt_prog_compiler_pic, $1)='-fPIC'
+	_LT_TAGVAR(lt_prog_compiler_static, $1)='-static'
+        ;;
       # icc used to be incompatible with GCC.
       # ICC 10 doesn't accept -KPIC any more.
       icc* | ifort*)
@@ -4949,6 +4968,9 @@ m4_if([$1], [CXX], [
       ;;
     esac
     ;;
+  linux* | k*bsd*-gnu | gnu*)
+    _LT_TAGVAR(link_all_deplibs, $1)=no
+    ;;
   *)
     _LT_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | $SED '\''s/.* //'\'' | sort | uniq > $export_symbols'
     ;;
@@ -5010,6 +5032,9 @@ dnl Note also adjust exclude_expsyms for C++ above.
     ;;
   openbsd* | bitrig*)
     with_gnu_ld=no
+    ;;
+  linux* | k*bsd*-gnu | gnu*)
+    _LT_TAGVAR(link_all_deplibs, $1)=no
     ;;
   esac
 
@@ -5265,7 +5290,7 @@ _LT_EOF
       fi
       ;;
 
-    netbsd*)
+    netbsd* | netbsdelf*-gnu)
       if echo __ELF__ | $CC -E - | $GREP __ELF__ >/dev/null; then
 	_LT_TAGVAR(archive_cmds, $1)='$LD -Bshareable $libobjs $deplibs $linker_flags -o $lib'
 	wlarc=
@@ -5786,6 +5811,7 @@ _LT_EOF
 	if test yes = "$lt_cv_irix_exported_symbol"; then
           _LT_TAGVAR(archive_expsym_cmds, $1)='$CC -shared $pic_flag $libobjs $deplibs $compiler_flags $wl-soname $wl$soname `test -n "$verstring" && func_echo_all "$wl-set_version $wl$verstring"` $wl-update_registry $wl$output_objdir/so_locations $wl-exports_file $wl$export_symbols -o $lib'
 	fi
+	_LT_TAGVAR(link_all_deplibs, $1)=no
       else
 	_LT_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -soname $soname `test -n "$verstring" && func_echo_all "-set_version $verstring"` -update_registry $output_objdir/so_locations -o $lib'
 	_LT_TAGVAR(archive_expsym_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -soname $soname `test -n "$verstring" && func_echo_all "-set_version $verstring"` -update_registry $output_objdir/so_locations -exports_file $export_symbols -o $lib'
@@ -5807,7 +5833,7 @@ _LT_EOF
       esac
       ;;
 
-    netbsd*)
+    netbsd* | netbsdelf*-gnu)
       if echo __ELF__ | $CC -E - | $GREP __ELF__ >/dev/null; then
 	_LT_TAGVAR(archive_cmds, $1)='$LD -Bshareable -o $lib $libobjs $deplibs $linker_flags'  # a.out
       else
@@ -6429,7 +6455,7 @@ if test yes != "$_lt_caught_CXX_error"; then
       # Commands to make compiler produce verbose output that lists
       # what "hidden" libraries, object files and flags are used when
       # linking a shared library.
-      output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP "\-L"'
+      output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP " \-L"'
 
     else
       GXX=no
@@ -6804,7 +6830,7 @@ if test yes != "$_lt_caught_CXX_error"; then
             # explicitly linking system object files so we need to strip them
             # from the output so that they don't get included in the library
             # dependencies.
-            output_verbose_link_cmd='templist=`($CC -b $CFLAGS -v conftest.$objext 2>&1) | $EGREP "\-L"`; list= ; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; func_echo_all "$list"'
+            output_verbose_link_cmd='templist=`($CC -b $CFLAGS -v conftest.$objext 2>&1) | $EGREP " \-L"`; list= ; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; func_echo_all "$list"'
             ;;
           *)
             if test yes = "$GXX"; then
@@ -6869,7 +6895,7 @@ if test yes != "$_lt_caught_CXX_error"; then
 	    # explicitly linking system object files so we need to strip them
 	    # from the output so that they don't get included in the library
 	    # dependencies.
-	    output_verbose_link_cmd='templist=`($CC -b $CFLAGS -v conftest.$objext 2>&1) | $GREP "\-L"`; list= ; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; func_echo_all "$list"'
+	    output_verbose_link_cmd='templist=`($CC -b $CFLAGS -v conftest.$objext 2>&1) | $GREP " \-L"`; list= ; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; func_echo_all "$list"'
 	    ;;
           *)
 	    if test yes = "$GXX"; then
@@ -7208,7 +7234,7 @@ if test yes != "$_lt_caught_CXX_error"; then
 	      # Commands to make compiler produce verbose output that lists
 	      # what "hidden" libraries, object files and flags are used when
 	      # linking a shared library.
-	      output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP "\-L"'
+	      output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP " \-L"'
 
 	    else
 	      # FIXME: insert proper C++ library support
@@ -7292,7 +7318,7 @@ if test yes != "$_lt_caught_CXX_error"; then
 	        # Commands to make compiler produce verbose output that lists
 	        # what "hidden" libraries, object files and flags are used when
 	        # linking a shared library.
-	        output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP "\-L"'
+	        output_verbose_link_cmd='$CC -shared $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP " \-L"'
 	      else
 	        # g++ 2.7 appears to require '-G' NOT '-shared' on this
 	        # platform.
@@ -7303,7 +7329,7 @@ if test yes != "$_lt_caught_CXX_error"; then
 	        # Commands to make compiler produce verbose output that lists
 	        # what "hidden" libraries, object files and flags are used when
 	        # linking a shared library.
-	        output_verbose_link_cmd='$CC -G $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP "\-L"'
+	        output_verbose_link_cmd='$CC -G $CFLAGS -v conftest.$objext 2>&1 | $GREP -v "^Configured with:" | $GREP " \-L"'
 	      fi
 
 	      _LT_TAGVAR(hardcode_libdir_flag_spec, $1)='$wl-R $wl$libdir'
@@ -9822,244 +9848,6 @@ AC_LANG_POP([C])])
 
 # For backward compatibility.
 AC_DEFUN_ONCE([AM_PROG_CC_C_O], [AC_REQUIRE([AC_PROG_CC])])
-
-# Copyright (C) 1999-2018 Free Software Foundation, Inc.
-#
-# This file is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-
-# AM_PATH_PYTHON([MINIMUM-VERSION], [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
-# ---------------------------------------------------------------------------
-# Adds support for distributing Python modules and packages.  To
-# install modules, copy them to $(pythondir), using the python_PYTHON
-# automake variable.  To install a package with the same name as the
-# automake package, install to $(pkgpythondir), or use the
-# pkgpython_PYTHON automake variable.
-#
-# The variables $(pyexecdir) and $(pkgpyexecdir) are provided as
-# locations to install python extension modules (shared libraries).
-# Another macro is required to find the appropriate flags to compile
-# extension modules.
-#
-# If your package is configured with a different prefix to python,
-# users will have to add the install directory to the PYTHONPATH
-# environment variable, or create a .pth file (see the python
-# documentation for details).
-#
-# If the MINIMUM-VERSION argument is passed, AM_PATH_PYTHON will
-# cause an error if the version of python installed on the system
-# doesn't meet the requirement.  MINIMUM-VERSION should consist of
-# numbers and dots only.
-AC_DEFUN([AM_PATH_PYTHON],
- [
-  dnl Find a Python interpreter.  Python versions prior to 2.0 are not
-  dnl supported. (2.0 was released on October 16, 2000).
-  m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
-[python python2 python3 dnl
- python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3 dnl
- python3.2 python3.1 python3.0 dnl
- python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 dnl
- python2.0])
-
-  AC_ARG_VAR([PYTHON], [the Python interpreter])
-
-  m4_if([$1],[],[
-    dnl No version check is needed.
-    # Find any Python interpreter.
-    if test -z "$PYTHON"; then
-      AC_PATH_PROGS([PYTHON], _AM_PYTHON_INTERPRETER_LIST, :)
-    fi
-    am_display_PYTHON=python
-  ], [
-    dnl A version check is needed.
-    if test -n "$PYTHON"; then
-      # If the user set $PYTHON, use it and don't search something else.
-      AC_MSG_CHECKING([whether $PYTHON version is >= $1])
-      AM_PYTHON_CHECK_VERSION([$PYTHON], [$1],
-			      [AC_MSG_RESULT([yes])],
-			      [AC_MSG_RESULT([no])
-			       AC_MSG_ERROR([Python interpreter is too old])])
-      am_display_PYTHON=$PYTHON
-    else
-      # Otherwise, try each interpreter until we find one that satisfies
-      # VERSION.
-      AC_CACHE_CHECK([for a Python interpreter with version >= $1],
-	[am_cv_pathless_PYTHON],[
-	for am_cv_pathless_PYTHON in _AM_PYTHON_INTERPRETER_LIST none; do
-	  test "$am_cv_pathless_PYTHON" = none && break
-	  AM_PYTHON_CHECK_VERSION([$am_cv_pathless_PYTHON], [$1], [break])
-	done])
-      # Set $PYTHON to the absolute path of $am_cv_pathless_PYTHON.
-      if test "$am_cv_pathless_PYTHON" = none; then
-	PYTHON=:
-      else
-        AC_PATH_PROG([PYTHON], [$am_cv_pathless_PYTHON])
-      fi
-      am_display_PYTHON=$am_cv_pathless_PYTHON
-    fi
-  ])
-
-  if test "$PYTHON" = :; then
-  dnl Run any user-specified action, or abort.
-    m4_default([$3], [AC_MSG_ERROR([no suitable Python interpreter found])])
-  else
-
-  dnl Query Python for its version number.  Getting [:3] seems to be
-  dnl the best way to do this; it's what "site.py" does in the standard
-  dnl library.
-
-  AC_CACHE_CHECK([for $am_display_PYTHON version], [am_cv_python_version],
-    [am_cv_python_version=`$PYTHON -c "import sys; sys.stdout.write(sys.version[[:3]])"`])
-  AC_SUBST([PYTHON_VERSION], [$am_cv_python_version])
-
-  dnl Use the values of $prefix and $exec_prefix for the corresponding
-  dnl values of PYTHON_PREFIX and PYTHON_EXEC_PREFIX.  These are made
-  dnl distinct variables so they can be overridden if need be.  However,
-  dnl general consensus is that you shouldn't need this ability.
-
-  AC_SUBST([PYTHON_PREFIX], ['${prefix}'])
-  AC_SUBST([PYTHON_EXEC_PREFIX], ['${exec_prefix}'])
-
-  dnl At times (like when building shared libraries) you may want
-  dnl to know which OS platform Python thinks this is.
-
-  AC_CACHE_CHECK([for $am_display_PYTHON platform], [am_cv_python_platform],
-    [am_cv_python_platform=`$PYTHON -c "import sys; sys.stdout.write(sys.platform)"`])
-  AC_SUBST([PYTHON_PLATFORM], [$am_cv_python_platform])
-
-  # Just factor out some code duplication.
-  am_python_setup_sysconfig="\
-import sys
-# Prefer sysconfig over distutils.sysconfig, for better compatibility
-# with python 3.x.  See automake bug#10227.
-try:
-    import sysconfig
-except ImportError:
-    can_use_sysconfig = 0
-else:
-    can_use_sysconfig = 1
-# Can't use sysconfig in CPython 2.7, since it's broken in virtualenvs:
-# <https://github.com/pypa/virtualenv/issues/118>
-try:
-    from platform import python_implementation
-    if python_implementation() == 'CPython' and sys.version[[:3]] == '2.7':
-        can_use_sysconfig = 0
-except ImportError:
-    pass"
-
-  dnl Set up 4 directories:
-
-  dnl pythondir -- where to install python scripts.  This is the
-  dnl   site-packages directory, not the python standard library
-  dnl   directory like in previous automake betas.  This behavior
-  dnl   is more consistent with lispdir.m4 for example.
-  dnl Query distutils for this directory.
-  AC_CACHE_CHECK([for $am_display_PYTHON script directory],
-    [am_cv_python_pythondir],
-    [if test "x$prefix" = xNONE
-     then
-       am_py_prefix=$ac_default_prefix
-     else
-       am_py_prefix=$prefix
-     fi
-     am_cv_python_pythondir=`$PYTHON -c "
-$am_python_setup_sysconfig
-if can_use_sysconfig:
-    sitedir = sysconfig.get_path('purelib', vars={'base':'$am_py_prefix'})
-else:
-    from distutils import sysconfig
-    sitedir = sysconfig.get_python_lib(0, 0, prefix='$am_py_prefix')
-sys.stdout.write(sitedir)"`
-     case $am_cv_python_pythondir in
-     $am_py_prefix*)
-       am__strip_prefix=`echo "$am_py_prefix" | sed 's|.|.|g'`
-       am_cv_python_pythondir=`echo "$am_cv_python_pythondir" | sed "s,^$am__strip_prefix,$PYTHON_PREFIX,"`
-       ;;
-     *)
-       case $am_py_prefix in
-         /usr|/System*) ;;
-         *)
-	  am_cv_python_pythondir=$PYTHON_PREFIX/lib/python$PYTHON_VERSION/site-packages
-	  ;;
-       esac
-       ;;
-     esac
-    ])
-  AC_SUBST([pythondir], [$am_cv_python_pythondir])
-
-  dnl pkgpythondir -- $PACKAGE directory under pythondir.  Was
-  dnl   PYTHON_SITE_PACKAGE in previous betas, but this naming is
-  dnl   more consistent with the rest of automake.
-
-  AC_SUBST([pkgpythondir], [\${pythondir}/$PACKAGE])
-
-  dnl pyexecdir -- directory for installing python extension modules
-  dnl   (shared libraries)
-  dnl Query distutils for this directory.
-  AC_CACHE_CHECK([for $am_display_PYTHON extension module directory],
-    [am_cv_python_pyexecdir],
-    [if test "x$exec_prefix" = xNONE
-     then
-       am_py_exec_prefix=$am_py_prefix
-     else
-       am_py_exec_prefix=$exec_prefix
-     fi
-     am_cv_python_pyexecdir=`$PYTHON -c "
-$am_python_setup_sysconfig
-if can_use_sysconfig:
-    sitedir = sysconfig.get_path('platlib', vars={'platbase':'$am_py_prefix'})
-else:
-    from distutils import sysconfig
-    sitedir = sysconfig.get_python_lib(1, 0, prefix='$am_py_prefix')
-sys.stdout.write(sitedir)"`
-     case $am_cv_python_pyexecdir in
-     $am_py_exec_prefix*)
-       am__strip_prefix=`echo "$am_py_exec_prefix" | sed 's|.|.|g'`
-       am_cv_python_pyexecdir=`echo "$am_cv_python_pyexecdir" | sed "s,^$am__strip_prefix,$PYTHON_EXEC_PREFIX,"`
-       ;;
-     *)
-       case $am_py_exec_prefix in
-         /usr|/System*) ;;
-         *)
-	   am_cv_python_pyexecdir=$PYTHON_EXEC_PREFIX/lib/python$PYTHON_VERSION/site-packages
-	   ;;
-       esac
-       ;;
-     esac
-    ])
-  AC_SUBST([pyexecdir], [$am_cv_python_pyexecdir])
-
-  dnl pkgpyexecdir -- $(pyexecdir)/$(PACKAGE)
-
-  AC_SUBST([pkgpyexecdir], [\${pyexecdir}/$PACKAGE])
-
-  dnl Run any user-specified action.
-  $2
-  fi
-
-])
-
-
-# AM_PYTHON_CHECK_VERSION(PROG, VERSION, [ACTION-IF-TRUE], [ACTION-IF-FALSE])
-# ---------------------------------------------------------------------------
-# Run ACTION-IF-TRUE if the Python interpreter PROG has version >= VERSION.
-# Run ACTION-IF-FALSE otherwise.
-# This test uses sys.hexversion instead of the string equivalent (first
-# word of sys.version), in order to cope with versions such as 2.2c1.
-# This supports Python 2.0 or higher. (2.0 was released on October 16, 2000).
-AC_DEFUN([AM_PYTHON_CHECK_VERSION],
- [prog="import sys
-# split strings by '.' and convert to numeric.  Append some zeros
-# because we need at least 4 digits for the hex conversion.
-# map returns an iterator in Python 3.0 and a list in 2.x
-minver = list(map(int, '$2'.split('.'))) + [[0, 0, 0]]
-minverhex = 0
-# xrange is not present in Python 3.0 and range returns an iterator
-for i in list(range(0, 4)): minverhex = (minverhex << 8) + minver[[i]]
-sys.exit(sys.hexversion < minverhex)"
-  AS_IF([AM_RUN_LOG([$1 -c "$prog"])], [$3], [$4])])
 
 # Copyright (C) 2001-2018 Free Software Foundation, Inc.
 #

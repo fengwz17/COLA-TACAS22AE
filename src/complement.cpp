@@ -15,6 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// The COLA Authors:
+//
+// COLA implements the slice-based algorithm for complementing UNBA, 
+// the NSBC algorithm for complementing LDBA, and 
+// the LDBA-to-DRA and LDBA-to-DPA algorithms for determinizing LDBA.
+
 #include <deque>
 #include <map>
 
@@ -2363,9 +2369,9 @@ namespace from_spot
                         }
                       }
                       // now compute min_dcc (minimal index disappeared) and min_acc (minimal index accepted)
-                      const int INT_MAX = nb_states_ + 2;
-                      int min_dcc = INT_MAX;
-                      int min_acc = INT_MAX;
+                      const int LOCAL_INT_MAX = nb_states_ + 2;
+                      int min_dcc = LOCAL_INT_MAX;
+                      int min_acc = LOCAL_INT_MAX;
                       for(int rnk = max_rnk; rnk >= 0; rnk --)
                       {
                         bool has_succ = false;
@@ -2403,13 +2409,13 @@ namespace from_spot
 
                       // std::cout << "Current next: " << get_name(to_small_mstate(succ))  << std::endl;
                       int parity;
-                      if(min_dcc == INT_MAX && min_acc != INT_MAX) 
+                      if(min_dcc == LOCAL_INT_MAX && min_acc != LOCAL_INT_MAX) 
                       {
                         parity = 2 * (min_acc + 1);
-                      }else if(min_dcc != INT_MAX && min_acc == INT_MAX)
+                      }else if(min_dcc != LOCAL_INT_MAX && min_acc == LOCAL_INT_MAX)
                       {
                         parity = 2 * min_dcc + 1;
-                      }else if(min_dcc != INT_MAX && min_acc != INT_MAX) 
+                      }else if(min_dcc != LOCAL_INT_MAX && min_acc != LOCAL_INT_MAX) 
                       {
                         parity = std::min(2* min_dcc + 1, 2 * min_acc + 2);
                       }else {
